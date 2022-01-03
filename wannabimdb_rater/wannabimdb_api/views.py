@@ -3,6 +3,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Movie, Rating
 from .serializers import MovieSerializer, RatingSerializer, UserSerializer
 
@@ -14,6 +15,8 @@ class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     authentication_classes = (TokenAuthentication, )
+    permission_classes = (AllowAny, )
+
     @action(detail=True, methods=['POST'])
     def rate_movie(self, request, pk=None):
         if 'stars' in request.data:
@@ -46,3 +49,12 @@ class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def update(self, request, *args, **kwargs):
+        response = {'message': 'post failed.  you are not allowed to do that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        response = {'message': 'create failed.  you are not allowed to do that'}
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
