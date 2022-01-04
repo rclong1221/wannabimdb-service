@@ -20,14 +20,9 @@ class MovieViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def rate_movie(self, request, pk=None):
         if 'stars' in request.data:
-
             movie = Movie.objects.get(id=pk)
             stars = request.data['stars']
             user = request.user
-            # user = User.objects.get(id=1)
-
-            print('user', user.id)
-            print('movie title', movie.title)
 
             try:
                 rating = Rating.objects.get(user=user.id, movie=movie.id)
